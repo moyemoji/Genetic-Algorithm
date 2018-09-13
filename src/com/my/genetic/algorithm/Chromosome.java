@@ -8,22 +8,21 @@ import java.util.Random;
 public class Chromosome {
 	private int[] gene_pool = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 	public static double[][] distances = {
-			{10000, 150, 350, 900, 421, 200, 1327, 476, 2261, 733, 831, 521, 862, 920, 274},
-			{150, 10000, 255, 871, 479, 294, 932, 1004, 873, 1207, 582, 313, 1179, 371, 582},
-			{350, 255, 10000, 739, 330, 124, 983, 1025, 2277, 639, 371, 82, 149, 880, 621},
-			{900, 871, 739, 10000, 538, 937, 682, 392, 85, 783, 1203, 336, 845, 323, 852},
-			{421, 479, 330, 538, 10000, 1732, 503, 842, 921, 283, 392, 724, 963, 210, 637},
-			{200, 294, 124, 937, 1732, 10000, 582, 391, 947, 836, 1394, 631, 773, 763, 134},
-			{1327, 932, 983, 682, 503, 582, 10000, 652, 863, 212, 572, 762, 273, 390, 682},
-			{476, 1004, 1025, 392, 842, 391, 652, 10000, 682, 721, 131, 683, 442, 489, 982},
-			{2261, 873, 2277, 85, 921, 947, 863, 682, 10000, 762, 314, 354, 521, 409, 131},
-			{733, 1207, 639, 783, 283, 836, 212, 721, 762, 10000, 309, 298, 351, 489, 314},
-			{831, 582, 371, 1203, 392, 1394, 572, 131, 314, 309, 10000, 133, 852, 314, 841},
-			{521, 313, 82, 336, 724, 631, 762, 683, 354, 298, 133, 10000, 672, 1532, 653},
-			{862, 1179, 149, 845, 963, 773, 273, 442, 521, 351, 852, 672, 10000, 682, 531},
-			{920, 371, 880, 323, 210, 763, 390, 489, 409, 489, 314, 1532, 682, 10000, 761},
-			{274, 582, 621, 852, 637, 134, 682, 982, 131, 314, 841, 653, 531, 761, 10000}
-	};
+			{ 10000, 150, 350, 900, 421, 200, 1327, 476, 2261, 733, 831, 521, 862, 920, 274 },
+			{ 150, 10000, 255, 871, 479, 294, 932, 1004, 873, 1207, 582, 313, 1179, 371, 582 },
+			{ 350, 255, 10000, 739, 330, 124, 983, 1025, 2277, 639, 371, 82, 149, 880, 621 },
+			{ 900, 871, 739, 10000, 538, 937, 682, 392, 85, 783, 1203, 336, 845, 323, 852 },
+			{ 421, 479, 330, 538, 10000, 1732, 503, 842, 921, 283, 392, 724, 963, 210, 637 },
+			{ 200, 294, 124, 937, 1732, 10000, 582, 391, 947, 836, 1394, 631, 773, 763, 134 },
+			{ 1327, 932, 983, 682, 503, 582, 10000, 652, 863, 212, 572, 762, 273, 390, 682 },
+			{ 476, 1004, 1025, 392, 842, 391, 652, 10000, 682, 721, 131, 683, 442, 489, 982 },
+			{ 2261, 873, 2277, 85, 921, 947, 863, 682, 10000, 762, 314, 354, 521, 409, 131 },
+			{ 733, 1207, 639, 783, 283, 836, 212, 721, 762, 10000, 309, 298, 351, 489, 314 },
+			{ 831, 582, 371, 1203, 392, 1394, 572, 131, 314, 309, 10000, 133, 852, 314, 841 },
+			{ 521, 313, 82, 336, 724, 631, 762, 683, 354, 298, 133, 10000, 672, 1532, 653 },
+			{ 862, 1179, 149, 845, 963, 773, 273, 442, 521, 351, 852, 672, 10000, 682, 531 },
+			{ 920, 371, 880, 323, 210, 763, 390, 489, 409, 489, 314, 1532, 682, 10000, 761 },
+			{ 274, 582, 621, 852, 637, 134, 682, 982, 131, 314, 841, 653, 531, 761, 10000 } };
 
 	/**
 	 * 实数编码
@@ -45,18 +44,18 @@ public class Chromosome {
 	public int[] getChroms() {
 		return chroms;
 	}
-	
+
 	/**
 	 * 打印染色体基因组
 	 */
 	public void printChroms() {
 		System.out.println(Arrays.toString(this.chroms));
 	}
-	
+
 	public double getDistance() {
 		return dist;
 	}
-	
+
 	public void setDistance(double dist) {
 		this.dist = dist;
 	}
@@ -117,7 +116,7 @@ public class Chromosome {
 		return copy;
 	}
 
-	public static List<Chromosome> genetic(Chromosome p1, Chromosome p2) {
+	public static Chromosome genetic(Chromosome p1, Chromosome p2) {
 		if (p1 == null || p2 == null) { // 染色体一个为空时，不产生下一代
 			return null;
 		}
@@ -127,6 +126,7 @@ public class Chromosome {
 
 		Chromosome c1 = clone(p1);
 		Chromosome c2 = clone(p2);
+		Chromosome c3 = c1;
 
 		int size = c1.chroms.length;
 		int a = (int) (Math.random() * size);
@@ -134,17 +134,28 @@ public class Chromosome {
 		int min = a > b ? b : a;
 		int max = a > b ? a : b;
 
-		int temp;
 		for (int i = min; i < max; i++) { // 基因交叉
-			temp = c1.chroms[i];
-			c1.chroms[i] = c2.chroms[i];
-			c2.chroms[i] = temp;
+			c3.chroms[i] = 0;
 		}
 
-		List<Chromosome> list = new ArrayList<Chromosome>(); // 将交叉得到的两条基因加入list
-		list.add(c1);
-		list.add(c2);
-		return list;
+		int index = min;
+		boolean flag = true;
+		for (int j = 0; j < size; j++) {
+			for (int v : c3.chroms) {
+				if (v == c2.chroms[j]) {
+					flag = false;
+					break;
+				}
+			}
+			if (flag) {
+				c3.chroms[index] = c2.chroms[j];
+				index++;
+			} else {
+				flag = true;
+			}
+		}
+
+		return c3;
 	}
 
 	/**
@@ -175,16 +186,13 @@ public class Chromosome {
 		}
 	}
 
-	public static void main(String[] args) {
-		Chromosome c = new Chromosome();
-		Chromosome c2 = new Chromosome();
-		c.printChroms();
-		c.mutation(4);
-		c2.printChroms();
-		List<Chromosome> list = Chromosome.genetic(c, c2);
-		for (Chromosome li : list) {
-			li.printChroms();
-		}
-	}
+//	public static void main(String[] args) {
+//		Chromosome c = new Chromosome();
+//		Chromosome c2 = new Chromosome();
+//		c.printChroms();
+//		c2.printChroms();
+//		Chromosome c3 = Chromosome.genetic(c, c2);
+//		c3.printChroms();
+//	}
 
 }

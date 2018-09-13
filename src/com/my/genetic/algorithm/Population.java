@@ -7,8 +7,9 @@ import java.util.List;
 public class Population {
 	private List<Chromosome> population = new ArrayList<Chromosome>();
 
-	private int pop_size = 40;
-	private int max_iter_num = 100;
+	private int pop_size = 60;
+	private int max_iter_num = 1000;
+	private double compete_rate = 0.15; // 参与竞赛的个体比例
 	private double mutation_rate = 0.001; // 基因变异概率
 	private int max_mutation_num = 5; // 最大变异步长
 	private int generation = 1; // 当前遗传到第几代
@@ -41,7 +42,7 @@ public class Population {
 			}
 			adaptedness += Chromosome.distances[gc[gc.length - 1] - 1][gc[0]];
 			chroms.setDistance(adaptedness);
-			chroms.setAdapt(1 / adaptedness);
+			chroms.setAdapt(1 / adaptedness * 10000);
 		}
 	}
 
@@ -64,22 +65,48 @@ public class Population {
 		average_adaptedness = total_adaptedness / pop_size;
 	}
 
+//	/**
+//	 * 轮盘赌法确定亲代，太慢了
+//	 * 
+//	 * @return
+//	 */
+//	private Chromosome getParentChroms() {
+//		while (true) {
+//			double slice = Math.random() * total_adaptedness;
+//			double sum = 0;
+//			for (Chromosome chroms : population) {
+//				sum += chroms.getAdapt();
+//				if (sum > slice && chroms.getAdapt() >= average_adaptedness) {
+//					System.out.println("return");
+//					return chroms;
+//				}
+//			}
+//		}
+//	}
+
 	/**
-	 * 轮盘赌法确定亲代
+	 * 锦标赛选择法
 	 * 
 	 * @return
 	 */
 	private Chromosome getParentChroms() {
-		while (true) {
-			double slice = Math.random() * total_adaptedness;
-			double sum = 0;
-			for (Chromosome chroms : population) {
-				sum += chroms.getAdapt();
-				if (sum > slice && chroms.getAdapt() > average_adaptedness) {
-					return chroms;
-				}
+		int num = (int) (pop_size * compete_rate);
+		List<Chromosome> list = new ArrayList<Chromosome>();
+
+		for (int i = 0; i < num; i++) {
+			int index = (int) (Math.random() * population.size());
+			list.add(population.get(index));
+		}
+
+		int best_index = 0;
+		double adaptedness = list.get(0).getAdapt();
+		for (int j = 0; j < list.size(); j++) {
+			if(list.get(j).getAdapt()>adaptedness) {
+				best_index = j;
 			}
 		}
+		
+		return list.get(best_index);
 	}
 
 	/**
@@ -89,17 +116,13 @@ public class Population {
 		System.out.println("4.Population is evolving...");
 		List<Chromosome> child_population = new ArrayList<Chromosome>();
 		while (child_population.size() < pop_size) {
+
 			Chromosome p1 = getParentChroms();
 			Chromosome p2 = getParentChroms();
-
-			List<Chromosome> children = Chromosome.genetic(p1, p2);
-			if (children != null) {
-				for (Chromosome child : children) {
-					child_population.add(child);
-				}
-			}
-
+			Chromosome child = Chromosome.genetic(p1, p2);
+			child_population.add(child);
 		}
+
 		population.clear();
 		population = child_population;
 	}
