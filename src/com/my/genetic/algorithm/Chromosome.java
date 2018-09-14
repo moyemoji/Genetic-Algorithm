@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Random;
 
 public class Chromosome {
-	private int[] gene_pool = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+	private static int[] gene_pool = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+	private static int[] user_pool;
 	public static double[][] distances = {
 			{ 10000, 150, 350, 900, 421, 200, 1327, 476, 2261, 733, 831, 521, 862, 920, 274 },
 			{ 150, 10000, 255, 871, 479, 294, 932, 1004, 873, 1207, 582, 313, 1179, 371, 582 },
@@ -38,6 +39,18 @@ public class Chromosome {
 		this.chroms = initChroms();
 	}
 
+	public static int[] getGenePool() {
+		return gene_pool;
+	}
+
+	public static int[] getUserPool() {
+		return user_pool;
+	}
+
+	public static void setUserPool(int[] pool) {
+		user_pool = pool;
+	}
+
 	/**
 	 * 获取染色体基因组
 	 */
@@ -67,8 +80,12 @@ public class Chromosome {
 	 * @return 返回初始化的基因组
 	 */
 	public int[] initChroms() {
-		int[] gp = gene_pool;
-		int len = gene_pool.length;
+		int len = user_pool.length;
+		int[] gp = new int[len];
+		for (int i = 0; i < len; i++) {
+			gp[i] = user_pool[i];
+		}
+
 		for (int i = len - 1; i > 0; i--) {
 			int j = (new Random()).nextInt(i + 1);
 			while (j == 0) { // 除了起始点外打乱
@@ -164,7 +181,7 @@ public class Chromosome {
 	 * @param num 变异的数量
 	 */
 	public void mutation(int num) {
-		int size = gene_pool.length;
+		int size = user_pool.length;
 		if (num > size - 2 || num < 0) {
 			throw new IllegalArgumentException("Mutation failed. Required num<0 or num>size-2");
 		} else {
@@ -185,14 +202,4 @@ public class Chromosome {
 			}
 		}
 	}
-
-//	public static void main(String[] args) {
-//		Chromosome c = new Chromosome();
-//		Chromosome c2 = new Chromosome();
-//		c.printChroms();
-//		c2.printChroms();
-//		Chromosome c3 = Chromosome.genetic(c, c2);
-//		c3.printChroms();
-//	}
-
 }

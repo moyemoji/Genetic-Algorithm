@@ -7,12 +7,15 @@ import java.util.List;
 public class Population {
 	private List<Chromosome> population = new ArrayList<Chromosome>();
 
-	private int pop_size = 60;
-	private int max_iter_num = 1000;
+	private int pop_size = 40; // 种群数量
+	private int max_iter_num = 1000; // 最大迭代次数
 	private double compete_rate = 0.15; // 参与竞赛的个体比例
 	private double mutation_rate = 0.001; // 基因变异概率
 	private int max_mutation_num = 5; // 最大变异步长
 	private int generation = 1; // 当前遗传到第几代
+	private double pre_distance = 0; // 上一代最短距离
+	private int dis_count = 0;
+	private int min_converge_num = 20; // 收敛条件
 
 	private double total_dist;
 	private double best_adaptedness;
@@ -40,7 +43,7 @@ public class Population {
 			for (int i = 0; i < gc.length - 1; i++) {
 				adaptedness += Chromosome.distances[gc[i] - 1][gc[i + 1] - 1];
 			}
-			adaptedness += Chromosome.distances[gc[gc.length - 1] - 1][gc[0]];
+			adaptedness += Chromosome.distances[gc[gc.length - 1] - 1][gc[0]-1];
 			chroms.setDistance(adaptedness);
 			chroms.setAdapt(1 / adaptedness * 10000);
 		}
@@ -101,11 +104,11 @@ public class Population {
 		int best_index = 0;
 		double adaptedness = list.get(0).getAdapt();
 		for (int j = 0; j < list.size(); j++) {
-			if(list.get(j).getAdapt()>adaptedness) {
+			if (list.get(j).getAdapt() > adaptedness) {
 				best_index = j;
 			}
 		}
-		
+
 		return list.get(best_index);
 	}
 
@@ -152,20 +155,33 @@ public class Population {
 		System.out.println("======================================\n");
 	}
 
-	public void start() {
+	private boolean convergeCheck() {
+		if (best_chroms.getDistance() == pre_distance) {
+			dis_count++;
+		} else {
+			pre_distance = best_chroms.getDistance();
+			dis_count = 1;
+		}
+		if (dis_count > min_converge_num) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public int[] start() {
 		System.out.println("1.Start Calculating...");
 		initPopulation();
-		for (generation = 1; generation <= max_iter_num; generation++) {
+		for (generation = 1;; generation++) {
 			calculateAdaptedness();
+			if (convergeCheck()) {
+				break;
+			}
 			populationEvolve();
 			populationMutation();
 			printAdaptedness();
 		}
+		
+		return best_chroms.getChroms();
 	}
-
-	public static void main(String[] args) {
-		Population pop = new Population();
-		pop.start();
-	}
-
 }
